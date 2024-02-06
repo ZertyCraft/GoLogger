@@ -1,0 +1,68 @@
+[
+  {
+    "name": "TestLineFormater_SpecialCharacters",
+    "fields": {
+      "format": "[%l] - %m"
+    },
+    "args": {
+      "level": "INFO",
+      "message": "Special characters: \n \t \" ' \\"
+    },
+    "want": "[INFO] - Special characters: \n \t \" ' \\"
+  },
+  {
+    "name": "TestLineFormater_UnknownTag",
+    "fields": {
+      "format": "[%x] - %m"
+    },
+    "args": {
+      "level": "DEBUG",
+      "message": "Unknown tag test"
+    },
+    "want": "[?] - Unknown tag test"
+  },
+  {
+    "name": "TestLineFormater_EmptyFormat",
+    "fields": {
+      "format": ""
+    },
+    "args": {
+      "level": "WARN",
+      "message": "Empty format test"
+    },
+    "want": "Empty format test"
+  },
+  {
+    "name": "TestLineFormater_UnknownLevel",
+    "fields": {
+      "format": "[%l] - %m"
+    },
+    "args": {
+      "level": "UNKNOWN",
+      "message": "Unknown level test"
+    },
+    "want": "[UNKNOWN] - Unknown level test"
+  },
+  {
+    "name": "TestLineFormater_InvertedTags",
+    "fields": {
+      "format": "%m - [%l]"
+    },
+    "args": {
+      "level": "ERROR",
+      "message": "Inverted tags test"
+    },
+    "want": "Inverted tags test - [ERROR]"
+  },
+  {
+    "name": "TestLineFormater_MessageWithTags",
+    "fields": {
+      "format": "[%l] - %m"
+    },
+    "args": {
+      "level": "DEBUG",
+      "message": "Message with %l and %m tags"
+    },
+    "want": "[DEBUG] - Message with %l and %m tags"
+  }
+]
