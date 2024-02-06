@@ -1,0 +1,28 @@
+# Options for analysis running.
+run:
+  # Run linters in parallel.
+  concurrency: 2
+
+linters:
+  # Enable all linters.
+  enable-all: true
+
+  # Disable deprecated linters.
+  disable:
+    - deadcode
+    - exhaustivestruct
+    - golint
+    - ifshort
+    - interfacer
+    - maligned
+    - nosnakecase
+    - scopelint
+    - structcheck
+    - varcheck
+
+    # Disable depguard linter.
+    - depguard
+# linters-settings:
+#   ireturn:
+#     allow:
+#       -
