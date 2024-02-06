@@ -7,10 +7,12 @@ import (
 	"github.com/ZertyCraft/GoLogger/levels"
 )
 
+// Handler is an interface that defines the behavior of a log handler.
 type Handler interface {
 	Log(level levels.Level, message string)
 }
 
+// BaseHandler is a struct that implements the Handler interface.
 type BaseHandler struct {
 	Handler  // Embed the Handler interface
 	formater formater.Formater

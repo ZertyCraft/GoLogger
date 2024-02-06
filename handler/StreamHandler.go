@@ -11,6 +11,7 @@ import (
 	"github.com/ZertyCraft/GoLogger/levels"
 )
 
+// `StreamHandler` is a struct that implements the Handler interface.
 type StreamHandler struct {
 	BaseHandler
 	level             levels.Level
@@ -25,6 +26,7 @@ type StreamHandler struct {
 	isFileWriterSetup bool
 }
 
+// `DefaultConfig` is a struct that contains the default configuration for the StreamHandler.
 type DefaultConfig struct {
 	filePermission    int
 	useLock           bool
@@ -35,6 +37,7 @@ type DefaultConfig struct {
 	isFileWriterSetup bool
 }
 
+// `NewStreamHandler` creates a new instance of StreamHandler with the default configuration.
 func NewStreamHandler() *StreamHandler {
 	const defaultFilePermission = 0o666
 
@@ -67,30 +70,37 @@ func NewStreamHandler() *StreamHandler {
 	return handler
 }
 
+// `SetLevel` sets the level of the handler.
 func (h *StreamHandler) SetLevel(level levels.Level) {
 	h.level = level
 }
 
+// `SetFilePermission` sets the file permission of the handler.
 func (h *StreamHandler) SetFilePermission(permission int) {
 	h.filePermission = permission
 }
 
+// `SetFileName` sets the name of the file for the handler.
 func (h *StreamHandler) SetFileName(name string) {
 	h.fileName = name
 }
 
+// `SetFilePath` sets the path of the file for the handler.
 func (h *StreamHandler) SetFilePath(path string) {
 	h.filePath = path
 }
 
+// `SetBufferSize` sets the buffer size of the handler.
 func (h *StreamHandler) SetBufferSize(size int) {
 	h.bufferSize = size
 }
 
+// `SetUseLock` sets the use of lock for the handler.
 func (h *StreamHandler) SetUseLock(useLock bool) {
 	h.useLock = useLock
 }
 
+// `SetFileWriterSetup` sets the file writer setup of the handler.
 func (h *StreamHandler) setupFileWriter() error {
 	if err := h.createDir(); err != nil {
 		return err
@@ -109,6 +119,7 @@ func (h *StreamHandler) setupFileWriter() error {
 
 const directoryPermission = 0o755
 
+// `createDir` creates the directory if it doesn't exist.
 func (h *StreamHandler) createDir() error {
 	if _, err := os.Stat(h.filePath); os.IsNotExist(err) {
 		if err := os.MkdirAll(h.filePath, directoryPermission); err != nil {
@@ -119,6 +130,7 @@ func (h *StreamHandler) createDir() error {
 	return nil
 }
 
+// `createFile` creates the file if it doesn't exist.
 func (h *StreamHandler) createFile() (*os.File, error) {
 	filePath := fmt.Sprintf("%s/%s.log", h.filePath, h.fileName)
 
@@ -130,6 +142,7 @@ func (h *StreamHandler) createFile() (*os.File, error) {
 	return file, nil
 }
 
+// `Log` logs the given message using the handler.
 func (h *StreamHandler) Log(level levels.Level, message string) {
 	if !h.isFileWriterSetup {
 		if err := h.setupFileWriter(); err != nil {
@@ -169,6 +182,7 @@ func (h *StreamHandler) Log(level levels.Level, message string) {
 	}
 }
 
+// `Close` closes the handler.
 func (h *StreamHandler) Close() {
 	if h.useLock {
 		h.mutex.Lock()

@@ -10,6 +10,7 @@ import (
 	"github.com/ZertyCraft/GoLogger/levels"
 )
 
+// `TestNewLineFormater` tests the NewLineFormater function.
 func TestNewLineFormater(t *testing.T) {
 	t.Parallel()
 
@@ -36,6 +37,7 @@ func TestNewLineFormater(t *testing.T) {
 	}
 }
 
+// `TestLineFormater_GetFormat` tests the GetFormat method of the LineFormater struct.
 func TestLineFormater_SetFormat(t *testing.T) {
 	t.Parallel()
 
@@ -87,6 +89,7 @@ type args struct {
 	message string
 }
 
+// `loadTestsFromFile` loads tests from a JSON file.
 func loadTestsFromFile(t *testing.T) []struct {
 	name   string
 	fields fields
