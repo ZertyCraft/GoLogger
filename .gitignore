@@ -22,3 +22,6 @@ go.work
 
 # Logs directory
 logs/
+
+# VS Code files
+.vscode/
