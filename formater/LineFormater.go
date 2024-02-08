@@ -7,6 +7,7 @@ import (
 	"github.com/ZertyCraft/GoLogger/levels"
 )
 
+// LineFormater is a formater that formats the message in a single line.
 type LineFormater struct {
 	BaseFormater
 }

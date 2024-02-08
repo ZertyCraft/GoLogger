@@ -1,0 +1,42 @@
+package main
+
+import (
+	"github.com/ZertyCraft/GoLogger/formater"
+	"github.com/ZertyCraft/GoLogger/handler"
+	"github.com/ZertyCraft/GoLogger/levels"
+	"github.com/ZertyCraft/GoLogger/logger"
+)
+
+func main() {
+	// Create a formater
+	formater := formater.NewLineFormater() // Create a new line formater
+
+	// Set the format of the formater
+	formater.SetFormat("%d - %l - %m") // %d: date, %l: level, %m: message
+
+	// Create the handler
+	handler := handler.NewConsoleHandler() // Create a new console handler
+
+	// Set the formater of the handler
+	handler.SetFormater(formater)
+
+	// Set the level of the handler
+	handler.SetLevel(levels.INFO)
+
+	// Create the logger
+	logger := logger.NewLogger()
+
+	// Add the handler to the logger
+	logger.AddHandler(handler)
+
+	// Log some messages
+	logger.Debug("This is a debug message") // Not logged (level is not sufficient)
+	logger.Info("This is an info message")  // Logged (level is sufficient)
+	// Output : `2006-01-01 00:00:00 - INFO - This is an info message`
+
+	// Change the format of the formater
+	formater.SetFormat("[%l] - %m") // %l: level, %m: message
+
+	// Log some messages
+	logger.Warning("This is a warning message") // Output: `[WARN] - This is a warning message`
+}

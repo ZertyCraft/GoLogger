@@ -23,14 +23,22 @@ func TestStreamHandler_Log_Logged(t *testing.T) {
 	streamHandler.SetFormater(lineFormater)
 	streamHandler.SetLevel(levels.INFO)
 
+	// Define the logs directory, file name and file path
+	const logsDirectory = "logs_test_logged"
+
+	const fileName = "test_logged.log"
+
+	const filePath = logsDirectory + "/" + fileName
+
 	// Set the logs directory
-	streamHandler.SetFilePath("logs_test_logged")
-	streamHandler.SetFileName("test_logged")
+	streamHandler.SetLogDirectory(logsDirectory)
+	streamHandler.SetFileName(fileName)
 
 	streamHandler.Log(levels.INFO, "TestStreamHandler_Log_Logged")
+	streamHandler.Flush()
 
 	// Open the log file
-	file, err := os.Open("logs_test_logged/test_logged.log")
+	file, err := os.Open(filePath)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,7 +57,7 @@ func TestStreamHandler_Log_Logged(t *testing.T) {
 	}
 
 	// Remove the log file
-	if err := os.Remove("logs_test_logged/test_logged.log"); err != nil {
+	if err := os.Remove(filePath); err != nil {
 		t.Fatal(err)
 	}
 
@@ -70,14 +78,21 @@ func TestStreamHandler_Log_NotLogged(t *testing.T) {
 	streamHandler.SetFormater(lineFormater)
 	streamHandler.SetLevel(levels.INFO)
 
+	// Define the logs directory, file name and file path
+	const logsDirectory = "logs_test_not_logged"
+
+	const fileName = "test_not_logged.log"
+
+	const filePath = logsDirectory + "/" + fileName
+
 	// Set the logs directory
-	streamHandler.SetFilePath("logs_test_not_logged")
-	streamHandler.SetFileName("test_not_logged")
+	streamHandler.SetLogDirectory(logsDirectory)
+	streamHandler.SetFileName(fileName)
 
 	streamHandler.Log(levels.DEBUG, "TestStreamHandler_Log_NotLogged")
 
 	// Open the log file
-	file, err := os.Open("logs_test_not_logged/test_not_logged.log")
+	file, err := os.Open(filePath)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -100,7 +115,7 @@ func TestStreamHandler_Log_NotLogged(t *testing.T) {
 	}
 
 	// Remove the log file
-	if err := os.Remove("logs_test_not_logged/test_not_logged.log"); err != nil {
+	if err := os.Remove(filePath); err != nil {
 		t.Fatal(err)
 	}
 

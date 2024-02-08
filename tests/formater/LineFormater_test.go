@@ -10,6 +10,7 @@ import (
 	"github.com/ZertyCraft/GoLogger/levels"
 )
 
+// `TestNewLineFormater` tests the NewLineFormater function.
 func TestNewLineFormater(t *testing.T) {
 	t.Parallel()
 
@@ -29,6 +30,7 @@ func TestNewLineFormater(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := formater.NewLineFormater(); !reflect.DeepEqual(got, test.want) {
 				t.Errorf("NewLineFormater() = %v, want %v", got, test.want)
 			}
@@ -36,6 +38,7 @@ func TestNewLineFormater(t *testing.T) {
 	}
 }
 
+// `TestLineFormater_GetFormat` tests the GetFormat method of the LineFormater struct.
 func TestLineFormater_SetFormat(t *testing.T) {
 	t.Parallel()
 
@@ -67,12 +70,15 @@ func TestLineFormater_SetFormat(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			f := &formater.LineFormater{
+
+			lineFormater := &formater.LineFormater{
 				BaseFormater: *formater.NewBaseFormater(test.fields.format),
 			}
-			f.SetFormat(test.args.format)
-			if f.GetFormat() != test.args.format {
-				t.Errorf("SetFormat() = %v, want %v", f.GetFormat(), test.args.format)
+
+			lineFormater.SetFormat(test.args.format)
+
+			if lineFormater.GetFormat() != test.args.format {
+				t.Errorf("SetFormat() = %v, want %v", lineFormater.GetFormat(), test.args.format)
 			}
 		})
 	}
@@ -87,6 +93,7 @@ type args struct {
 	message string
 }
 
+// `loadTestsFromFile` loads tests from a JSON file.
 func loadTestsFromFile(t *testing.T) []struct {
 	name   string
 	fields fields
@@ -124,15 +131,18 @@ func TestLineFormater_Format(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
+
 			f := &formater.LineFormater{
 				BaseFormater: *formater.NewBaseFormater(test.fields.format),
 			}
+
 			got, err := f.Format(test.args.level, test.args.message)
 			if err != nil {
 				t.Errorf("Format() error = %v", err)
 
 				return
 			}
+
 			if got != test.want {
 				t.Errorf("Format() = %v, want %v", got, test.want)
 			} else {

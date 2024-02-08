@@ -10,6 +10,7 @@ const (
 	CRITICAL
 )
 
+// `String` is a method that returns the string representation of the log level.
 func (l Level) String() string {
 	switch l {
 	case DEBUG:
