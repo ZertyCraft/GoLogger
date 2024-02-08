@@ -115,15 +115,28 @@ func (handler *StreamHandler) isOpened() bool {
 	return handler.file != nil
 }
 
+// Ensures the log file is opened.
+// ensureFileOpened checks if the log file is already opened. If not, it opens the file.
+// If there is an error while opening the file, it logs a fatal error message.
+func (handler *StreamHandler) ensureFileOpened() {
+	if !handler.isOpened() {
+		if err := handler.open(); err != nil {
+			log.Fatal("Error opening log file:", err)
+		}
+	}
+}
+
 // `open` opens the file for writing.
 // open opens the log file for writing.
 // It creates the log directory if it doesn't exist and opens the file in append mode.
 // If the file already exists, it appends new log entries to it.
 // Returns an error if any operation fails.
 func (handler *StreamHandler) open() error {
-	// Create the log directory if it doesn't exist
+	// Create the log directory if it doesn't exist, however, skip
+	const logDirectoryPermission = 0o755
+
 	if _, err := os.Stat(handler.logDirectory); os.IsNotExist(err) {
-		if err := os.Mkdir(handler.logDirectory, os.ModePerm); err != nil {
+		if err := os.Mkdir(handler.logDirectory, os.FileMode(logDirectoryPermission)); err != nil {
 			return fmt.Errorf("failed to create log directory: %w", err)
 		}
 	}
@@ -227,6 +240,16 @@ func (handler *StreamHandler) Log(level levels.Level, message string) {
 // If the StreamHandler is configured to use a lock, it will acquire the lock before flushing.
 // Returns an error if there was a problem flushing the writer or opening the file.
 func (handler *StreamHandler) Flush() error {
+	// Check if writer is nil
+	if handler.writer == nil {
+		return nil
+	}
+
+	// Check if the writer have data in buffer
+	if handler.writer.Buffered() == 0 {
+		return nil
+	}
+
 	// Check if file is opened
 	if !handler.isOpened() {
 		// Open the file

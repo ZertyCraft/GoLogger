@@ -57,7 +57,7 @@ func (handler *RotatingFileHandler) SetMaxBackupCount(maxBackupCount int) {
 // - %t: the current time in the format "2006-01-02T15:04:05"
 // - %n: the current time in the format "20060102150405"
 // - %d: the current date in the format "2006-01-02"
-// - %t: the current time in the format "15:04:05"
+// - %t: the current time in the format "15:04:05".
 func (handler *RotatingFileHandler) SetFilenameFormat(filenameFormat string) {
 	handler.filenameFormat = filenameFormat
 }
@@ -87,23 +87,28 @@ func (handler *RotatingFileHandler) GetFilenameFormat() string {
 // - %t: the current time in the format "2006-01-02T15:04:05"
 // - %n: the current time in the format "20060102150405"
 // - %d: the current date in the format "2006-01-02"
-// - %t: the current time in the format "15:04:05"
+// - %t: the current time in the format "15:04:05".
 func (handler *RotatingFileHandler) getNewFileName(fileName string, backupNumber int) string {
 	// Replace the placeholders
 	newFileName := handler.filenameFormat
-	newFileName = strings.Replace(newFileName, "%s", fileName, -1)
-	newFileName = strings.Replace(newFileName, "%d", strconv.Itoa(backupNumber), -1)
-	newFileName = strings.Replace(newFileName, "%t", time.Now().Format("2006-01-02T15:04:05"), -1)
-	newFileName = strings.Replace(newFileName, "%n", time.Now().Format("20060102150405"), -1)
-	newFileName = strings.Replace(newFileName, "%d", time.Now().Format("2006-01-02"), -1)
-	newFileName = strings.Replace(newFileName, "%t", time.Now().Format("15:04:05"), -1)
+	newFileName = strings.ReplaceAll(newFileName, "%s", fileName)
+	newFileName = strings.ReplaceAll(newFileName, "%d", strconv.Itoa(backupNumber))
+	newFileName = strings.ReplaceAll(newFileName, "%t", time.Now().Format("2006-01-02T15:04:05"))
+	newFileName = strings.ReplaceAll(newFileName, "%n", time.Now().Format("20060102150405"))
+	newFileName = strings.ReplaceAll(newFileName, "%d", time.Now().Format("2006-01-02"))
+	newFileName = strings.ReplaceAll(newFileName, "%t", time.Now().Format("15:04:05"))
 
 	return newFileName
 }
 
 // `renameFile` renames the file.
 func (handler *RotatingFileHandler) renameFile(directory string, oldName string, newName string) error {
-	return os.Rename(filepath.Join(directory, oldName), filepath.Join(directory, newName))
+	err := os.Rename(filepath.Join(directory, oldName), filepath.Join(directory, newName))
+	if err != nil {
+		return fmt.Errorf("failed to rename file: %w", err)
+	}
+
+	return nil
 }
 
 // `deleteFile` deletes the file.
@@ -112,6 +117,7 @@ func (handler *RotatingFileHandler) deleteFile(directory string, name string) er
 	if err != nil {
 		return fmt.Errorf("failed to delete file: %w", err)
 	}
+
 	return nil
 }
 
@@ -145,7 +151,6 @@ func (handler *RotatingFileHandler) rotate() {
 	if err := handler.open(); err != nil {
 		panic(err)
 	}
-
 }
 
 // `getFileSize` returns the size of the file in bytes.
@@ -188,16 +193,7 @@ func (handler *RotatingFileHandler) Log(level levels.Level, message string) {
 	handler.StreamHandler.Log(level, message)
 }
 
-// Ensures the log file is opened
-func (handler *RotatingFileHandler) ensureFileOpened() {
-	if !handler.isOpened() {
-		if err := handler.open(); err != nil {
-			log.Fatal("Error opening log file:", err)
-		}
-	}
-}
-
-// Checks the file size and rotates the log file if necessary
+// Checks the file size and rotates the log file if necessary.
 func (handler *RotatingFileHandler) checkAndRotateFile() {
 	if handler.getFileSize() > handler.maxFileSize {
 		log.Println("Rotating file (size =", handler.getFileSize(), ")")
@@ -205,7 +201,7 @@ func (handler *RotatingFileHandler) checkAndRotateFile() {
 	}
 }
 
-// Cleans up old backup files exceeding the maximum backup count
+// Cleans up old backup files exceeding the maximum backup count.
 func (handler *RotatingFileHandler) cleanupOldBackups() {
 	files, err := os.ReadDir(handler.logDirectory)
 	if err != nil {
